@@ -36,58 +36,62 @@ check_dependency "wget"
 check_dependency "dpkg"
 check_dependency "apt-get"
 
-# Ask the user if they want to uninstall old JDK and Java
-read -p "Do you want to completely uninstall existing JDK and Java? (y/n): " uninstall_choice
-
-if [[ $uninstall_choice == "y" || $uninstall_choice == "Y" ]]; then
-    remove_old_jdk
-else
-    echo "Skipping JDK and Java uninstallation."
-fi
-
-# Ask the user if they want to install a new JDK package
-read -p "Do you want to install a new JDK package? (y/n): " install_choice
-
-if [[ $install_choice == "y" || $install_choice == "Y" ]]; then
-    # Ask the user for the package choice
-    echo "Select the package to install:"
-    echo "1) Full Package"
-    echo "2) Standard Package"
-    echo "3) Lite Package"
-    read -p "Enter your choice (1/2/3): " choice
-
-    # Download and install the appropriate package based on user input
-    case $choice in
-        1)
-            echo "You chose the Full Package."
-            package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64-full.deb"
-            ;;
-        2)
-            echo "You chose the Standard Package."
-            package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64.deb"
-            ;;
-        3)
-            echo "You chose the Lite Package."
-            package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64-lite.deb"
-            ;;
-        *)
-            echo "Invalid choice, exiting."
-            exit 1
-            ;;
+# Prompt to uninstall old JDK and Java
+while true; do
+    read -p "Do you want to completely uninstall existing JDK and Java? (y/n): " uninstall_choice
+    case $uninstall_choice in
+        [Yy]* ) remove_old_jdk; break;;
+        [Nn]* ) echo "Skipping JDK and Java uninstallation."; break;;
+        * ) echo "Please answer yes (y) or no (n).";;
     esac
+done
 
-    # Download the selected package
-    echo "Downloading the package..."
-    wget $package_url -O bellsoft-jdk.deb
+# Prompt to install new JDK
+while true; do
+    read -p "Do you want to install a new JDK package? (y/n): " install_choice
+    case $install_choice in
+        [Yy]* ) 
+            # Ask the user for the package choice
+            echo "Select the package to install:"
+            echo "1) Full Package"
+            echo "2) Standard Package"
+            echo "3) Lite Package"
+            read -p "Enter your choice (1/2/3): " choice
 
-    # Install the downloaded package
-    install_jdk "bellsoft-jdk.deb"
+            # Download and install the appropriate package based on user input
+            case $choice in
+                1)
+                    echo "You chose the Full Package."
+                    package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64-full.deb"
+                    ;;
+                2)
+                    echo "You chose the Standard Package."
+                    package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64.deb"
+                    ;;
+                3)
+                    echo "You chose the Lite Package."
+                    package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64-lite.deb"
+                    ;;
+                *)
+                    echo "Invalid choice, exiting."
+                    exit 1
+                    ;;
+            esac
 
-    # Cleanup
-    echo "Cleaning up..."
-    rm bellsoft-jdk.deb
+            # Download the selected package
+            echo "Downloading the package..."
+            wget $package_url -O bellsoft-jdk.deb
 
-    echo "Installation complete!"
-else
-    echo "Skipping JDK installation."
-fi
+            # Install the downloaded package
+            install_jdk "bellsoft-jdk.deb"
+
+            # Cleanup
+            echo "Cleaning up..."
+            rm bellsoft-jdk.deb
+
+            echo "Installation complete!"
+            break;;
+        [Nn]* ) echo "Skipping JDK installation."; break;;
+        * ) echo "Please answer yes (y) or no (n).";;
+    esac
+done

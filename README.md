@@ -2,6 +2,13 @@
 Installer for JDK 23 for Raspberry Pi OS/Debian.
 
 ## curl:
-`sudo curl -s https://raw.githubusercontent.com/JustablockCode/jdk-23-rpi-installer/main/script.sh | bash`
+`curl -o main.sh https://raw.githubusercontent.com/JustablockCode/jdk-23-rpi-installer/main/main.sh
+chmod +x main.sh
+sudo ./main.sh`
 ## wget:
-`sudo wget -qO- https://raw.githubusercontent.com/JustablockCode/jdk-23-rpi-installer/main/script.sh | bash`
+`wget -O main.sh https://raw.githubusercontent.com/JustablockCode/jdk-23-rpi-installer/main/main.sh
+chmod +x main.sh
+sudo ./main.sh`
+
+### Notes:
+Using 1 line command didn't work on curl and wget so...

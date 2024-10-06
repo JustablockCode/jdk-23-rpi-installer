@@ -95,6 +95,7 @@ check_dependency "apt-get"
 while true; do
     show_menu
     read option
+    echo "Thank you for using JDK 23 installer by justablock:)"
 
     case $option in
         1)

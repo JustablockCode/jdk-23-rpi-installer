@@ -23,7 +23,7 @@ remove_old_jdk() {
         return
     fi
 
-    echo "The following JDK and Java packages were found:"
+    echo "The following JDK or Java related package was found:"
 
     # Loop through the found packages
     for package in $java_packages; do

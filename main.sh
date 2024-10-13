@@ -11,14 +11,43 @@ check_dependency() {
     fi
 }
 
-# Function to remove old JDK and Java installations
+# Function to search for and remove JDK and Java-related packages
 remove_old_jdk() {
-    echo "Removing old JDK and Java if installed..."
-    sudo apt-get remove --purge openjdk-* -y
-    sudo apt-get remove --purge bellsoft-jdk* -y
-    sudo apt-get autoremove -y
-    echo "Old JDK and Java removed."
+    echo "Searching for installed JDK and Java-related packages..."
+
+    # Find installed JDK and Java packages
+    java_packages=$(dpkg -l | grep -E 'jdk|java' | awk '{print $2}')
+
+    if [ -z "$java_packages" ]; then
+        echo "No JDK or Java packages found."
+        return
+    fi
+
+    echo "The following JDK and Java packages were found:"
+
+    # Loop through the found packages
+    for package in $java_packages; do
+        echo "- $package"
+        while true; do
+            read -p "Do you want to remove $package? (y/n): " choice
+            case $choice in
+                [Yy]* )
+                    echo "Removing $package..."
+                    sudo dpkg --remove $package
+                    sudo dpkg --purge $package
+                    sudo apt-get autoremove -y
+                    echo "$package removed."
+                    break;;
+                [Nn]* )
+                    echo "Skipping removal of $package."
+                    break;;
+                * )
+                    echo "Please answer yes (y) or no (n).";;
+            esac
+        done
+    done
 }
+
 
 # Function to install JDK package
 install_jdk() {

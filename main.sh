@@ -23,30 +23,54 @@ remove_old_jdk() {
         return
     fi
 
-    echo "The following JDK or Java related package was found:"
+    echo "The following JDK and Java packages were found:"
+    echo "$java_packages"
 
-    # Loop through the found packages
-    for package in $java_packages; do
-        echo "- $package"
-        while true; do
-            read -p "Do you want to remove $package? (y/n): " choice
-            case $choice in
-                [Yy]* )
-                    echo "Removing $package..."
-                    sudo dpkg --remove $package
-                    sudo dpkg --purge $package
-                    sudo apt-get autoremove -y
-                    echo "$package removed."
-                    break;;
-                [Nn]* )
-                    echo "Skipping removal of $package."
-                    break;;
-                * )
-                    echo "Please answer yes (y) or no (n).";;
-            esac
+    # Count the packages
+    package_count=$(echo "$java_packages" | wc -l)
+    echo "Total packages found: $package_count"
+
+    # Ask for batch removal option
+    read -p "Do you want to remove all packages at once? (y/n): " batch_choice
+
+    if [[ "$batch_choice" =~ ^[Yy]$ ]]; then
+        read -p "Are you sure you want to remove all listed packages? (y/n): " confirm_batch
+        if [[ "$confirm_batch" =~ ^[Yy]$ ]]; then
+            for package in $java_packages; do
+                echo "Removing $package..."
+                sudo dpkg --remove $package
+                sudo dpkg --purge $package
+                sudo apt-get autoremove -y
+                echo "$package removed."
+            done
+            echo "All selected packages have been removed."
+        else
+            echo "Batch removal cancelled."
+        fi
+    else
+        # Loop through the found packages for individual removal
+        for package in $java_packages; do
+            while true; do
+                read -p "Do you want to remove $package? (y/n): " choice
+                case $choice in
+                    [Yy]* )
+                        echo "Removing $package..."
+                        sudo dpkg --remove $package
+                        sudo dpkg --purge $package
+                        sudo apt-get autoremove -y
+                        echo "$package removed."
+                        break;;
+                    [Nn]* )
+                        echo "Skipping removal of $package."
+                        break;;
+                    * )
+                        echo "Please answer yes (y) or no (n).";;
+                esac
+            done
         done
-    done
+    fi
 }
+
 
 
 # Function to install JDK package

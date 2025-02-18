@@ -119,15 +119,15 @@ install_jdk_menu() {
     case $choice in
         1)
             echo "You chose the Full Package."
-            package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64-full.deb"
+            package_url="https://download.bell-sw.com/java/23.0.2+9/bellsoft-jdk23.0.2+9-linux-aarch64-full.deb"
             ;;
         2)
             echo "You chose the Standard Package."
-            package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64.deb"
+            package_url="https://download.bell-sw.com/java/23.0.2+9/bellsoft-jdk23.0.2+9-linux-aarch64.deb"
             ;;
         3)
             echo "You chose the Lite Package."
-            package_url="https://download.bell-sw.com/java/23+38/bellsoft-jdk23+38-linux-aarch64-lite.deb"
+            package_url="https://download.bell-sw.com/java/23.0.2+9/bellsoft-jdk23.0.2+9-linux-aarch64-lite.deb"
             ;;
         *)
             echo "Invalid choice."
